@@ -1,0 +1,32 @@
+# Build outputs
+build/
+.gradle/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+docker-compose.yaml
+Dockerfile
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
