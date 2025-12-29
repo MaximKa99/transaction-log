@@ -15,13 +15,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("io.debezium:debezium-api:3.1.1.Final")
     implementation("net.objecthunter:exp4j:0.4.8")
     implementation("org.postgresql:postgresql:42.7.5")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.debezium:debezium-connector-postgres:3.1.1.Final")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
