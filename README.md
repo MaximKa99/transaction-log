@@ -1,13 +1,11 @@
 # Transaction Log Application
 
-A Spring Boot application that manages mathematical formulas with real-time calculation capabilities using Change Data Capture (CDC) and WebSocket subscriptions.
+A Spring Boot application that manages mathematical formulas with real-time calculation capabilities using WebSocket subscriptions.
 
 ## Features
 
 - **Formula Management**: Create, read, update, and delete mathematical formulas via REST API
 - **Real-time Calculations**: Subscribe to formulas and receive calculation results in real-time via WebSocket
-- **Change Data Capture (CDC)**: Automatically detects database changes using Debezium and updates active subscriptions
-- **Dynamic Formula Updates**: Formula changes are immediately reflected in active calculations without requiring re-subscription
 
 ## Prerequisites
 
@@ -20,7 +18,6 @@ A Spring Boot application that manages mathematical formulas with real-time calc
 The application consists of:
 - **REST API**: HTTP endpoints for formula CRUD operations
 - **WebSocket Server**: Real-time communication for formula subscriptions
-- **CDC Service**: Monitors PostgreSQL database changes using Debezium
 - **Subscription Manager**: Manages WebSocket subscriptions and calculation processing
 - **PostgreSQL Database**: Stores formulas with expressions and variables
 
@@ -34,7 +31,7 @@ The application consists of:
    ```
 
    This will:
-   - Start a PostgreSQL database with logical replication enabled
+   - Start a PostgreSQL database
    - Build and start the Spring Boot application
    - Expose the application on port `8080`
    - Expose debug port `50005` for remote debugging
@@ -54,8 +51,7 @@ The application consists of:
      -e POSTGRES_USER=postgres \
      -e POSTGRES_DB=postgres \
      -p 5432:5432 \
-     postgres \
-     postgres -c wal_level=logical -c max_replication_slots=4 -c max_wal_senders=4
+     postgres
    ```
 
 2. **Update application configuration** (if needed):
@@ -217,18 +213,6 @@ The application uses [exp4j](https://www.objecthunter.net/exp4j/) for expression
 - `x^2 + 2*x + 1`
 - `log(x) * sqrt(x)`
 
-## Change Data Capture (CDC)
-
-The application uses Debezium to monitor PostgreSQL database changes in real-time. When a formula is:
-
-- **Created**: New subscriptions will use the new formula
-- **Updated**: Active subscriptions automatically switch to the updated formula
-- **Deleted**: Active subscriptions for that formula are cleaned up
-
-CDC is configured automatically when the application starts. The configuration uses:
-- **Replication Slot**: `debezium_slot`
-- **Publication**: `debezium_publication`
-
 ## Configuration
 
 ### Application Properties
@@ -241,12 +225,6 @@ spring:
     url: jdbc:postgresql://postgres:5432/postgres
     username: postgres
     password: postgres
-
-debezium:
-  slot:
-    name: debezium_slot
-  publication:
-    name: debezium_publication
 ```
 
 ### Docker Compose
@@ -254,7 +232,6 @@ debezium:
 The `docker-compose.yaml` file configures:
 - Application service on ports `8080` (HTTP) and `50005` (debug)
 - PostgreSQL service on port `5432`
-- PostgreSQL with logical replication enabled
 
 ## Development
 
@@ -286,12 +263,10 @@ src/main/java/com/epam/
 │   └── FormulaController.java   # REST API endpoints
 ├── service/
 │   ├── FormulaService.java      # Formula business logic
-│   ├── CdcService.java          # Change Data Capture handling
 │   └── SubscriptionManager.java # WebSocket subscription management
 ├── entity/
 │   └── Formula.java             # Formula entity
 ├── config/
-│   ├── DebeziumConfig.java      # Debezium CDC configuration
 │   └── WebSocketConfig.java     # WebSocket configuration
 ├── handler/
 │   └── SubscribeHandler.java    # WebSocket subscribe handler
